@@ -1,7 +1,10 @@
 #ifndef ENIGMA_H
 #define ENIGMA_H
 #include <string>
+#include <vector>
 using namespace std;
+
+
 
 class ConnectionPair {
    
@@ -36,24 +39,50 @@ public:
 class Rotor { //reflector can use the same class
 
 public:
+    Rotor* left = nullptr;
+    Rotor* right = nullptr;
+    Rotor(string& rotor_filename, int rotor_pos);
+    std::vector<int> notches;
+    int number_of_notches;
+    int rotor_pos = 0;
     ConnectionPair connection_pairs[26];
     int number_of_connection_pairs = 0;
-    Rotor(string rotor_filename);
+    void increaseOffsetByOne();
     int getConnectingAlphabetFromRight(int inputAlphabet);
     int getConnectingAlphabetFromLeft(int inputAlphabet);
     void addConnectionPair(int connection1, int connection2);
 };
 
-class RotorListNode {
+// class RotorListNode {
 
+// public:
+//     Rotor rotor;
+//     RotorListNode(Rotor& rotor):rotor(rotor){}
+//     RotorListNode* left = nullptr;
+//     RotorListNode* right = nullptr;
+// };
+
+class Enigma {
+    string plugboard_filename;
+    string reflector_filename;
+    string rotor_filenames[10];
+    string rotor_pos_filename;
+    string temp_string;
+    int number_of_rotors = 0;
+
+    Plugboard* plugboard;
+    Reflector* reflector;
+    Rotor* current_rotor_node;
+
+   
 public:
-    Rotor rotor;
-    RotorListNode(Rotor& rotor):rotor(rotor){}
-    RotorListNode* left = nullptr;
-    RotorListNode* right = nullptr;
-};
+    Enigma(int argc, char** argv);
+    void createComponents ();
+    Rotor* createRotors();
+    int map(int input_alphabet);
 
-RotorListNode* createRotors(string rotor_filenames[], int number_of_rotors); 
+
+};
 
 
 #endif
