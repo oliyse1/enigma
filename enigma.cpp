@@ -18,27 +18,99 @@ Plugboard::Plugboard(string plugboard_filename){
     int connection_a;
     int connection_b;
 
-    ifstream in_stream;
+    fstream in_stream;
     in_stream.open(plugboard_filename);
     if (in_stream.fail()) {
+        cerr << "Error opening congifuration file" << endl;
         exit(ERROR_OPENING_CONFIGURATION_FILE);
     }
+    int input_int;
+    int counter = 0;
+    while (in_stream >> input_int){
+        //unsure
+        if (!in_stream) {
+            cerr << "Non numeric character" << endl;
+            exit(NON_NUMERIC_CHARACTER);
+        }
 
-    in_stream >> connection_a;
-    in_stream >> connection_b;
+        if (counter % 2 == 0){
+            connection_a = input_int;
+        }
+        else {
 
-    while (!in_stream.eof()) {
-        
-        addConnectionPair(connection_a, connection_b);
+            connection_b = input_int;
+            addConnectionPair(connection_a, connection_b);
+            number_of_connection_pairs++;
+        }
+        counter++;
+    }
 
-        in_stream >> connection_a;
-        in_stream >> connection_b;
-        
-        number_of_connection_pairs++;
-
+    if (counter % 2 != 0) {
+            cerr << "Incorrect number of plugboard parameters" << endl;
+            exit(INCORRECT_NUMBER_OF_PLUGBOARD_PARAMETERS);
     }
 
     in_stream.close();
+
+    // ifstream in_stream;
+    // in_stream.open(plugboard_filename);
+    // if (in_stream.fail()) {
+    //     exit(ERROR_OPENING_CONFIGURATION_FILE);
+    // }
+
+    // if(!in_stream.eof()) {
+
+    //     if(in_stream.peek() != EOF && !isdigit(in_stream.peek())) {
+    //         cerr << "Non numeric character" << endl;
+    //         exit(NON_NUMERIC_CHARACTER);
+    //     }
+    //     in_stream >> connection_a;
+
+    //     if(in_stream.eof()) {
+    //         cerr << "Incorrect number of plugboard parameters" << endl;
+    //         exit(INCORRECT_NUMBER_OF_PLUGBOARD_PARAMETERS);
+    //     }
+
+    //     if(in_stream.peek() != EOF && !isdigit(in_stream.peek())) {
+    //         cerr << "Non numeric character" << endl;
+    //         exit(NON_NUMERIC_CHARACTER);
+    //     }
+
+    //     in_stream >> connection_b;
+
+    //     while (!in_stream.eof()) {
+
+    //         if (connection_a < 0 || connection_a > 25 || connection_b < 0 || connection_b > 25) {
+    //             cerr << "Invalid index" << endl;
+    //             exit(INVALID_INDEX);
+    //         }
+        
+    //         addConnectionPair(connection_a, connection_b);
+    //         number_of_connection_pairs++;
+
+    //         if(in_stream.peek() != EOF && !isdigit(in_stream.peek())) {
+    //             cerr << "Non numeric character" << endl;
+    //             exit(NON_NUMERIC_CHARACTER);
+    //         }
+    //         in_stream >> connection_a;
+
+    //         if(in_stream.eof()) {
+    //             cerr << "Incorrect number of plugboard parameters" << endl;
+    //             exit(INCORRECT_NUMBER_OF_PLUGBOARD_PARAMETERS);
+    //         }
+
+    //          if(in_stream.peek() != EOF && !isdigit(in_stream.peek())) {
+    //             cerr << "Non numeric character" << endl;
+    //             exit(NON_NUMERIC_CHARACTER);
+    //         }
+
+    //         in_stream >> connection_b;
+
+    //     }
+    // }
+
+
+    // in_stream.close();
 }
 
 int Plugboard::getConnectingAlphabet(int input_alphabet) {
@@ -59,13 +131,15 @@ int Plugboard::getConnectingAlphabet(int input_alphabet) {
 
 void Plugboard::addConnectionPair(int connection1, int connection2){
 
-    if (connection1 = connection2) {
+    if (connection1 == connection2) {
+        cerr << "Impossible plugboard configuration" << endl;
         exit(IMPOSSIBLE_PLUGBOARD_CONFIGURATION);
     }
     
     for (int count = 0; count < number_of_connection_pairs; count++) {
         if (connection1 == connection_pairs[count].connection_point_1 || connection1 == connection_pairs[count].connection_point_2
             || connection2 == connection_pairs[count].connection_point_1 || connection2 == connection_pairs[count].connection_point_2) {
+                cerr << "Impossible plugboard configuration" << endl;
                 exit(IMPOSSIBLE_PLUGBOARD_CONFIGURATION);
         }
 
@@ -267,22 +341,27 @@ Rotor* Enigma::createRotors() {
 }
 
 int Enigma::map(int input_alphabet){
-    int output1 = plugboard -> getConnectingAlphabet(input_alphabet);
-    current_rotor_node -> increaseOffsetByOne();
-    int output2 = current_rotor_node -> getConnectingAlphabetFromRight(output1);
-    current_rotor_node = current_rotor_node -> left;
-    int output3 = current_rotor_node -> getConnectingAlphabetFromRight(output2);
-    current_rotor_node = current_rotor_node -> left;
-    int output4 = current_rotor_node -> getConnectingAlphabetFromRight(output3);
-    int output5 = reflector -> getConnectingAlphabet(output4);
-    int output6 = current_rotor_node -> getConnectingAlphabetFromLeft(output5);
-    current_rotor_node = current_rotor_node -> right;
-    int output7 = current_rotor_node -> getConnectingAlphabetFromLeft(output6);
-    current_rotor_node = current_rotor_node -> right;
-    int output8 = current_rotor_node -> getConnectingAlphabetFromLeft(output7);
-    int output9 = plugboard -> getConnectingAlphabet(output8);
+    int output;
+    output = plugboard -> getConnectingAlphabet(input_alphabet);
+    if (current_rotor_node != nullptr) {
+        current_rotor_node -> increaseOffsetByOne();
+        output = current_rotor_node -> getConnectingAlphabetFromRight(output);
+        while (current_rotor_node-> left != nullptr) {
+            current_rotor_node = current_rotor_node -> left;
+            output = current_rotor_node -> getConnectingAlphabetFromRight(output);
+        }
+    }
+    output = reflector -> getConnectingAlphabet(output);
+    if (current_rotor_node != nullptr) {
+        output = current_rotor_node -> getConnectingAlphabetFromLeft(output);
+        while (current_rotor_node-> right != nullptr) {
+            current_rotor_node = current_rotor_node -> right;
+            output = current_rotor_node -> getConnectingAlphabetFromLeft(output);
+        }
+    }
+    output = plugboard -> getConnectingAlphabet(output);
 
 
-    return output9;
+    return output;
 }
 
