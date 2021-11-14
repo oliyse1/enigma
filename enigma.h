@@ -18,7 +18,7 @@ public:
 class Plugboard { //reflector can use the same class
 
 public:
-    ConnectionPair connection_pairs[13];
+    std::vector<ConnectionPair> connection_pairs;
     int number_of_connection_pairs = 0;
     Plugboard(string plugboard_filename);
     int getConnectingAlphabet(int inputAlphabet);
