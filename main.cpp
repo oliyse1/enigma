@@ -9,16 +9,46 @@ using namespace std;
 int main(int argc, char** argv) {
 
 
-    //output command line arguments
+    // //output command line arguments
 
-    cout << argc << endl;
+    // cout << argc << endl;
 
-    for (int i=0; i < argc; i++){
-        cout << argv[i] << endl;
-    }
+    // for (int i=0; i < argc; i++){
+    //     cout << argv[i] << endl;
+    // }
 
+    // string input;
     Enigma enigma(argc, argv);
-    cout << enigma.map(6);
+    char input;
+    string output = "";
+    
+    // getline(cin, input);
+    while (cin >> input) {
+        // cin >> ws >> input;
+        cout << static_cast<int>(input - 'A');
+
+        output = static_cast<char>(enigma.map(static_cast<int>(input - 'A')) + static_cast<int>('A'));
+        cout << output;
+
+    }
+    
+
+    // cout << (static_cast<int>(input[0]) -'A') << endl;
+    // cout << (static_cast<char>(1 + static_cast<int>('A') ));
+    // cout << input.length() << endl;
+
+    
+    // output.push_back(static_cast<char>(enigma.map(static_cast<int>(input[0]))) + static_cast<int>('A'));
+    // for (unsigned int i = 0; i < input.length(); i++) {
+    //     if (input[i] == ' ') {
+    //         output.push_back(' ');
+    //     }
+    //     output.push_back(static_cast<char>(enigma.map(static_cast<int>(input[i]))) + static_cast<int>('A'));
+    // }
+
+
+
+    cout << output;
 
     // //output plugboard pairs
     // cout << "Plugboard"<<endl;

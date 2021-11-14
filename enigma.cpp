@@ -133,7 +133,6 @@ Rotor::Rotor(string& rotor_filename, int rotor_pos){
 }
 
 void Rotor::increaseOffsetByOne() {
-    cout << rotor_pos;
     rotor_pos++ ;
     for (int count = 0; count < number_of_notches; count++) {
 
@@ -247,16 +246,6 @@ int Enigma::map(int input_alphabet){
     int output8 = current_rotor_node -> getConnectingAlphabetFromLeft(output7);
     int output9 = plugboard -> getConnectingAlphabet(output8);
 
-
-    cout << output1 <<endl;
-    cout << output2 <<endl;
-    cout << output3 <<endl;
-    cout << output4 <<endl;
-    cout << output5 <<endl;
-    cout << output6 <<endl;
-    cout << output7 <<endl;
-    cout << output8 <<endl;
-    cout << output9 <<endl;
 
     return output9;
 }
