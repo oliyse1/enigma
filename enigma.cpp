@@ -21,7 +21,7 @@ Plugboard::Plugboard(string plugboard_filename){
     fstream in_stream;
     in_stream.open(plugboard_filename);
     if (in_stream.fail()) {
-        cerr << "Error opening congifuration file" << endl;
+        cerr << "Error opening congifuration file (plugboard)" << endl;
         exit(ERROR_OPENING_CONFIGURATION_FILE);
     }
     int input_int;
@@ -29,8 +29,13 @@ Plugboard::Plugboard(string plugboard_filename){
     while (in_stream >> input_int){
         //unsure
         if (!in_stream) {
-            cerr << "Non numeric character" << endl;
+            cerr << "Non numeric character (plugboard)" << endl;
             exit(NON_NUMERIC_CHARACTER);
+        }
+
+        if (input_int < 0 || input_int > 25) {
+                cerr << "Invalid index (plugboard)" << endl;
+                exit(INVALID_INDEX);
         }
 
         if (counter % 2 == 0){
@@ -46,7 +51,7 @@ Plugboard::Plugboard(string plugboard_filename){
     }
 
     if (counter % 2 != 0) {
-            cerr << "Incorrect number of plugboard parameters" << endl;
+            cerr << "Incorrect number of plugboard parameters (plugboard)" << endl;
             exit(INCORRECT_NUMBER_OF_PLUGBOARD_PARAMETERS);
     }
 
@@ -155,7 +160,7 @@ Reflector::Reflector(string reflector_filename){
     fstream in_stream;
     in_stream.open(reflector_filename);
     if (in_stream.fail()) {
-        cerr << "Error opening congifuration file" << endl;
+        cerr << "Error opening congifuration file (reflector)" << endl;
         exit(ERROR_OPENING_CONFIGURATION_FILE);
     }
     int input_int;
@@ -163,8 +168,13 @@ Reflector::Reflector(string reflector_filename){
     while (in_stream >> input_int){
         //unsure
         if (!in_stream) {
-            cerr << "Non numeric character" << endl;
+            cerr << "Non numeric character (reflector)" << endl;
             exit(NON_NUMERIC_CHARACTER);
+        }
+
+        if (input_int < 0 || input_int > 25) {
+                cerr << "Invalid index (reflector)" << endl;
+                exit(INVALID_INDEX);
         }
 
         if (counter % 2 == 0){
@@ -180,8 +190,8 @@ Reflector::Reflector(string reflector_filename){
     }
 
     if (counter % 2 != 0 || number_of_connection_pairs != 13) {
-            cerr << "Incorrect number of plugboard parameters" << endl;
-            exit(INCORRECT_NUMBER_OF_PLUGBOARD_PARAMETERS);
+            cerr << "Incorrect number of reflector parameters (relfector)" << endl;
+            exit(INCORRECT_NUMBER_OF_REFLECTOR_PARAMETERS);
     }
 
     in_stream.close();
