@@ -45,7 +45,7 @@ public:
     std::vector<int> notches;
     int number_of_notches;
     int rotor_pos = 0;
-    ConnectionPair connection_pairs[26];
+    std::vector<ConnectionPair> connection_pairs;
     int number_of_connection_pairs = 0;
     void increaseOffsetByOne();
     int getConnectingAlphabetFromRight(int inputAlphabet);

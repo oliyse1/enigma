@@ -232,30 +232,41 @@ void Reflector::addConnectionPair(int connection1, int connection2){
 Rotor::Rotor(string& rotor_filename, int rotor_pos){
     this -> rotor_pos = rotor_pos;
 
-    int connection_a;
-    
-    ifstream in_stream;
+    fstream in_stream;
     in_stream.open(rotor_filename);
     if (in_stream.fail()) {
+        cerr << "Error opening congifuration file (rotor)" << endl;
         exit(ERROR_OPENING_CONFIGURATION_FILE);
     }
+    int input_int;
+    int counter = 0;
 
-    in_stream >> connection_a;
+    in_stream >> input_int;
 
-    int index = 0;
+    while (number_of_connection_pairs < 26){
+        //unsure
+        if (in_stream.eof()) {
+            cerr << "Not enough mappings provided for rotor" << endl;
+            exit(INVALID_ROTOR_MAPPING);
+        }
+        if (!in_stream) {
+            cerr << "Non numeric character (rotor)" << endl;
+            exit(NON_NUMERIC_CHARACTER);
+        }
+        if (input_int < 0 || input_int > 25) {
+                cerr << "Invalid index (rotor)" << endl;
+                exit(INVALID_INDEX);
+        }
 
-    while (number_of_connection_pairs < 26) {
-        
-        addConnectionPair(index, connection_a);
-
-        in_stream >> connection_a;
-        
+        addConnectionPair(counter, input_int);
         number_of_connection_pairs++;
-        index++;
+        
+        in_stream >> input_int;
 
+        counter++;
     }
 
-    int notch = connection_a;
+    int notch = input_int;
     
 
     while (!in_stream.eof()) {
@@ -265,8 +276,8 @@ Rotor::Rotor(string& rotor_filename, int rotor_pos){
     }
 
     in_stream.close();
-
 }
+
 
 void Rotor::increaseOffsetByOne() {
     rotor_pos++ ;
@@ -304,7 +315,15 @@ int Rotor::getConnectingAlphabetFromLeft(int input_alphabet) {
     
 
 void Rotor::addConnectionPair(int connection1, int connection2){
-    connection_pairs[number_of_connection_pairs] = ConnectionPair(connection1, connection2);
+    
+    for (int count = 0; count < number_of_connection_pairs; count++) {
+        if (connection2 == connection_pairs[count].connection_point_2) {
+                cerr << "Invalid rotor mapping" << endl;
+                exit(INVALID_ROTOR_MAPPING );
+        }
+
+    }
+    connection_pairs.push_back(ConnectionPair(connection1, connection2));
 }
 
 Enigma::Enigma(int argc, char** argv) {
@@ -348,15 +367,31 @@ Rotor* Enigma::createRotors() {
     ifstream in_stream;
     in_stream.open(rotor_pos_filename);
     if (in_stream.fail()) {
+        cerr << "Error opening congifuration file (rotor position)" << endl;
+        exit(ERROR_OPENING_CONFIGURATION_FILE);
+    }
+    if (in_stream.fail()) {
         exit(ERROR_OPENING_CONFIGURATION_FILE);
     }
     int rotor_pos = 0;
 
     in_stream >> rotor_pos;
 
-    for (int count = 0; count < number_of_rotors && !in_stream.eof(); count++) {
+    for (int count = 0; count < number_of_rotors; count++) {
         //crate new rotor object
-        
+        if (in_stream.eof()) {
+            cerr << "Starting position of rotor is not provided" << endl;
+            exit(NO_ROTOR_STARTING_POSITION);
+        }
+
+        if (!in_stream) {
+            cerr << "Non numeric character (rotor position)" << endl;
+            exit(NON_NUMERIC_CHARACTER);
+        }
+        if (rotor_pos < 0 || rotor_pos > 25) {
+                cerr << "Invalid index (rotor position)" << endl;
+                exit(INVALID_INDEX);
+        }
 
         if (current_rotor_node == nullptr){
             current_rotor_node = new Rotor(rotor_filenames[count], rotor_pos);;
