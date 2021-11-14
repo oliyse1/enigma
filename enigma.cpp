@@ -26,8 +26,10 @@ Plugboard::Plugboard(string plugboard_filename){
     }
     int input_int;
     int counter = 0;
-    while (in_stream >> input_int){
-        //unsure
+    in_stream >> input_int;
+
+    while (!in_stream.eof()){
+ 
         if (in_stream.fail()) {
             cerr << "Non-numeric character in plugboard file plugboard.pb" << endl;
             exit(NON_NUMERIC_CHARACTER);
@@ -47,6 +49,7 @@ Plugboard::Plugboard(string plugboard_filename){
             addConnectionPair(connection_a, connection_b);
             number_of_connection_pairs++;
         }
+        in_stream >> input_int;
         counter++;
     }
 
@@ -107,7 +110,9 @@ Reflector::Reflector(string reflector_filename){
     }
     int input_int;
     int counter = 0;
-    while (in_stream >> input_int){
+    in_stream >> input_int;
+
+    while (!in_stream.eof()){
         //unsure
         if (in_stream.fail()) {
             cerr << "Non-numeric character in reflector file reflector.rf" << endl;
@@ -128,7 +133,13 @@ Reflector::Reflector(string reflector_filename){
             addConnectionPair(connection_a, connection_b);
             number_of_connection_pairs++;
         }
+        in_stream >> input_int;
         counter++;
+    }
+
+    if (counter % 2 != 0) {
+        cerr << "Incorrect (odd) number of parameters in reflector file reflector.rf" << endl;
+        exit(INCORRECT_NUMBER_OF_REFLECTOR_PARAMETERS);
     }
 
     if (number_of_connection_pairs < 13) {
@@ -136,10 +147,7 @@ Reflector::Reflector(string reflector_filename){
             exit(INCORRECT_NUMBER_OF_REFLECTOR_PARAMETERS);
     }
 
-    if (counter % 2 != 0) {
-            cerr << "Incorrect (odd) number of parameters in reflector file reflector.rf" << endl;
-            exit(INCORRECT_NUMBER_OF_REFLECTOR_PARAMETERS);
-    }
+
 
     in_stream.close();
 }
@@ -193,7 +201,7 @@ Rotor::Rotor(string& rotor_filename, int rotor_pos){
     while (number_of_connection_pairs < 26){
         //unsure
         if (in_stream.eof()) {
-            cerr << "Not enough mappings provided for rotor" << endl;
+            cerr << "Not all inputs mapped in rotor file: rotor.rot" << endl;
             exit(INVALID_ROTOR_MAPPING);
         }
         if (in_stream.fail()) {
@@ -265,7 +273,7 @@ void Rotor::addConnectionPair(int connection1, int connection2){
     
     for (int count = 0; count < number_of_connection_pairs; count++) {
         if (connection2 == connection_pairs[count].connection_point_2) {
-                cerr << "Invalid mapping of input "<< connection2 << " to output " << connection1 <<" (output " << connection2 << " is already mapped to from input " << connection_pairs[count].connection_point_1 << ")" << endl;
+                cerr << "Invalid mapping of input "<< connection1 << " to output " << connection2 <<" (output " << connection2 << " is already mapped to from input " << connection_pairs[count].connection_point_1 << ") in" << endl;
                 exit(INVALID_ROTOR_MAPPING );
         }
 
@@ -294,7 +302,7 @@ Enigma::Enigma(int argc, char** argv) {
     }
 
     if (plugboard_filename == "" || reflector_filename == "" || rotor_pos_filename == "") {
-        cerr << "enigma plugboard-file reflector-file (<rotor-file>)* rotor-positions" << endl;
+        cerr << "usage: enigma plugboard-file reflector-file (<rotor-file>)* rotor-positions" << endl;
         exit(INSUFFICIENT_NUMBER_OF_PARAMETERS);
     }
 
@@ -342,7 +350,6 @@ Rotor* Enigma::createRotors() {
 
         if (current_rotor_node == nullptr){
             current_rotor_node = new Rotor(rotor_filenames[count], rotor_pos);;
-            in_stream >> rotor_pos; 
         }
         else {
             Rotor* left = current_rotor_node;
@@ -350,7 +357,7 @@ Rotor* Enigma::createRotors() {
             left -> right = current_rotor_node;
             current_rotor_node -> left = left;
         }
-
+        in_stream >> rotor_pos; 
     }
 
     in_stream.close();
