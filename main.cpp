@@ -28,10 +28,10 @@ int main(int argc, char** argv) {
     char input;
 
     while (cin >> input) {
-        if (input = ' '){
+        if (input == ' '){
             continue;
         }
-        else if (input < 'A' or > 'Z') {
+        else if (input < 'A' || input > 'Z') {
             cerr << "Input characters should be from A to Z only, please enter a valid input character" << endl;
             exit(INVALID_INPUT_CHARACTER);
         }
@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
         cout << output ;
     }
 
-    exit(NO_ERROR)
+    exit(NO_ERROR);
     
     // getline(cin, input);
     

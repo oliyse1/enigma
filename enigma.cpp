@@ -60,13 +60,13 @@ int Plugboard::getConnectingAlphabet(int input_alphabet) {
 void Plugboard::addConnectionPair(int connection1, int connection2){
 
     if (connection1 = connection2) {
-        exit(IMPOSSIBLE_PLUGBOARD_CONFIGURATION)
+        exit(IMPOSSIBLE_PLUGBOARD_CONFIGURATION);
     }
     
     for (int count = 0; count < number_of_connection_pairs; count++) {
-        if (connection1 = connection_pairs[count].connection_point_1 || connection1 = connection_pairs[count].connection_point_2
-            || connection2 = connection_pairs[count].connection_point_1 || connection2 = connection_pairs[count].connection_point_2) {
-                exit(IMPOSSIBLE_PLUGBOARD_CONFIGURATION)
+        if (connection1 == connection_pairs[count].connection_point_1 || connection1 == connection_pairs[count].connection_point_2
+            || connection2 == connection_pairs[count].connection_point_1 || connection2 == connection_pairs[count].connection_point_2) {
+                exit(IMPOSSIBLE_PLUGBOARD_CONFIGURATION);
         }
 
     }
