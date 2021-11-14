@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
             continue;
         }
         else if (input < 'A' || input > 'Z') {
-            cerr << "Input characters should be from A to Z only, please enter a valid input character" << endl;
+            cerr << input << " is not a valid input character (input characters must be upper case letters A-Z)!" << endl;
             exit(INVALID_INPUT_CHARACTER);
         }
         output = static_cast<char>(enigma.map(static_cast<int>(input - 'A')) + static_cast<int>('A'));

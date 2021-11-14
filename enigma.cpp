@@ -28,13 +28,13 @@ Plugboard::Plugboard(string plugboard_filename){
     int counter = 0;
     while (in_stream >> input_int){
         //unsure
-        if (!in_stream) {
-            cerr << "Non numeric character (plugboard)" << endl;
+        if (in_stream.fail()) {
+            cerr << "Non-numeric character in plugboard file plugboard.pb" << endl;
             exit(NON_NUMERIC_CHARACTER);
         }
 
         if (input_int < 0 || input_int > 25) {
-                cerr << "Invalid index (plugboard)" << endl;
+                cerr << static_cast<char>(input_int) << " is not a valid input character (input characters must be upper case letters A-Z)" << endl;
                 exit(INVALID_INDEX);
         }
 
@@ -51,71 +51,13 @@ Plugboard::Plugboard(string plugboard_filename){
     }
 
     if (counter % 2 != 0) {
-            cerr << "Incorrect number of plugboard parameters (plugboard)" << endl;
+            cerr << "Incorrect number of parameters in plugboard file plugboard.pb" << endl;
             exit(INCORRECT_NUMBER_OF_PLUGBOARD_PARAMETERS);
     }
 
     in_stream.close();
 
-    // ifstream in_stream;
-    // in_stream.open(plugboard_filename);
-    // if (in_stream.fail()) {
-    //     exit(ERROR_OPENING_CONFIGURATION_FILE);
-    // }
-
-    // if(!in_stream.eof()) {
-
-    //     if(in_stream.peek() != EOF && !isdigit(in_stream.peek())) {
-    //         cerr << "Non numeric character" << endl;
-    //         exit(NON_NUMERIC_CHARACTER);
-    //     }
-    //     in_stream >> connection_a;
-
-    //     if(in_stream.eof()) {
-    //         cerr << "Incorrect number of plugboard parameters" << endl;
-    //         exit(INCORRECT_NUMBER_OF_PLUGBOARD_PARAMETERS);
-    //     }
-
-    //     if(in_stream.peek() != EOF && !isdigit(in_stream.peek())) {
-    //         cerr << "Non numeric character" << endl;
-    //         exit(NON_NUMERIC_CHARACTER);
-    //     }
-
-    //     in_stream >> connection_b;
-
-    //     while (!in_stream.eof()) {
-
-    //         if (connection_a < 0 || connection_a > 25 || connection_b < 0 || connection_b > 25) {
-    //             cerr << "Invalid index" << endl;
-    //             exit(INVALID_INDEX);
-    //         }
-        
-    //         addConnectionPair(connection_a, connection_b);
-    //         number_of_connection_pairs++;
-
-    //         if(in_stream.peek() != EOF && !isdigit(in_stream.peek())) {
-    //             cerr << "Non numeric character" << endl;
-    //             exit(NON_NUMERIC_CHARACTER);
-    //         }
-    //         in_stream >> connection_a;
-
-    //         if(in_stream.eof()) {
-    //             cerr << "Incorrect number of plugboard parameters" << endl;
-    //             exit(INCORRECT_NUMBER_OF_PLUGBOARD_PARAMETERS);
-    //         }
-
-    //          if(in_stream.peek() != EOF && !isdigit(in_stream.peek())) {
-    //             cerr << "Non numeric character" << endl;
-    //             exit(NON_NUMERIC_CHARACTER);
-    //         }
-
-    //         in_stream >> connection_b;
-
-    //     }
-    // }
-
-
-    // in_stream.close();
+    
 }
 
 int Plugboard::getConnectingAlphabet(int input_alphabet) {
@@ -167,8 +109,8 @@ Reflector::Reflector(string reflector_filename){
     int counter = 0;
     while (in_stream >> input_int){
         //unsure
-        if (!in_stream) {
-            cerr << "Non numeric character (reflector)" << endl;
+        if (in_stream.fail()) {
+            cerr << "Non-numeric character in reflector file reflector.rf" << endl;
             exit(NON_NUMERIC_CHARACTER);
         }
 
@@ -189,8 +131,13 @@ Reflector::Reflector(string reflector_filename){
         counter++;
     }
 
-    if (counter % 2 != 0 || number_of_connection_pairs != 13) {
-            cerr << "Incorrect number of reflector parameters (relfector)" << endl;
+    if (number_of_connection_pairs < 13) {
+            cerr << "Insufficient number of mappings in reflector file: reflector.rf" << endl;
+            exit(INCORRECT_NUMBER_OF_REFLECTOR_PARAMETERS);
+    }
+
+    if (counter % 2 != 0) {
+            cerr << "Incorrect (odd) number of parameters in reflector file reflector.rf" << endl;
             exit(INCORRECT_NUMBER_OF_REFLECTOR_PARAMETERS);
     }
 
@@ -249,8 +196,8 @@ Rotor::Rotor(string& rotor_filename, int rotor_pos){
             cerr << "Not enough mappings provided for rotor" << endl;
             exit(INVALID_ROTOR_MAPPING);
         }
-        if (!in_stream) {
-            cerr << "Non numeric character (rotor)" << endl;
+        if (in_stream.fail()) {
+            cerr << "Non-numeric character for mapping in rotor file rotor.rot" << endl;
             exit(NON_NUMERIC_CHARACTER);
         }
         if (input_int < 0 || input_int > 25) {
@@ -318,7 +265,7 @@ void Rotor::addConnectionPair(int connection1, int connection2){
     
     for (int count = 0; count < number_of_connection_pairs; count++) {
         if (connection2 == connection_pairs[count].connection_point_2) {
-                cerr << "Invalid rotor mapping" << endl;
+                cerr << "Invalid mapping of input "<< connection2 << " to output " << connection1 <<" (output " << connection2 << " is already mapped to from input " << connection_pairs[count].connection_point_1 << ")" << endl;
                 exit(INVALID_ROTOR_MAPPING );
         }
 
@@ -347,7 +294,7 @@ Enigma::Enigma(int argc, char** argv) {
     }
 
     if (plugboard_filename == "" || reflector_filename == "" || rotor_pos_filename == "") {
-        cerr << "Insufficient number of command line arguments provided as parameters" << endl;
+        cerr << "enigma plugboard-file reflector-file (<rotor-file>)* rotor-positions" << endl;
         exit(INSUFFICIENT_NUMBER_OF_PARAMETERS);
     }
 
@@ -380,12 +327,12 @@ Rotor* Enigma::createRotors() {
     for (int count = 0; count < number_of_rotors; count++) {
         //crate new rotor object
         if (in_stream.eof()) {
-            cerr << "Starting position of rotor is not provided" << endl;
+            cerr << "No starting position for rotor " << count << " in rotor position file: rotor.pos" << endl;
             exit(NO_ROTOR_STARTING_POSITION);
         }
 
-        if (!in_stream) {
-            cerr << "Non numeric character (rotor position)" << endl;
+        if (in_stream.fail()) {
+            cerr << "Non-numeric character in rotor positions file rotor.pos" << endl;
             exit(NON_NUMERIC_CHARACTER);
         }
         if (rotor_pos < 0 || rotor_pos > 25) {
