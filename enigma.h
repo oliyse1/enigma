@@ -29,7 +29,7 @@ public:
 class Reflector { //reflector can use the same class
 
 public:
-    ConnectionPair connection_pairs[13];
+    std::vector<ConnectionPair> connection_pairs;
     int number_of_connection_pairs = 0;
     Reflector(string reflector_filename);
     int getConnectingAlphabet(int inputAlphabet);

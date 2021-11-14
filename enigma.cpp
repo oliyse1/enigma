@@ -152,24 +152,36 @@ Reflector::Reflector(string reflector_filename){
     int connection_a;
     int connection_b;
 
-    ifstream in_stream;
+    fstream in_stream;
     in_stream.open(reflector_filename);
     if (in_stream.fail()) {
+        cerr << "Error opening congifuration file" << endl;
         exit(ERROR_OPENING_CONFIGURATION_FILE);
     }
+    int input_int;
+    int counter = 0;
+    while (in_stream >> input_int){
+        //unsure
+        if (!in_stream) {
+            cerr << "Non numeric character" << endl;
+            exit(NON_NUMERIC_CHARACTER);
+        }
 
-    in_stream >> connection_a;
-    in_stream >> connection_b;
+        if (counter % 2 == 0){
+            connection_a = input_int;
+        }
+        else {
 
-    while (!in_stream.eof()) {
-        
-        addConnectionPair(connection_a, connection_b);
+            connection_b = input_int;
+            addConnectionPair(connection_a, connection_b);
+            number_of_connection_pairs++;
+        }
+        counter++;
+    }
 
-        in_stream >> connection_a;
-        in_stream >> connection_b;
-        
-        number_of_connection_pairs++;
-
+    if (counter % 2 != 0 || number_of_connection_pairs != 13) {
+            cerr << "Incorrect number of plugboard parameters" << endl;
+            exit(INCORRECT_NUMBER_OF_PLUGBOARD_PARAMETERS);
     }
 
     in_stream.close();
@@ -191,7 +203,20 @@ int Reflector::getConnectingAlphabet(int input_alphabet) {
     
 
 void Reflector::addConnectionPair(int connection1, int connection2){
-    connection_pairs[number_of_connection_pairs] = ConnectionPair(connection1, connection2);
+    if (connection1 == connection2) {
+        cerr << "Invalid reflector mapping" << endl;
+        exit(INVALID_REFLECTOR_MAPPING);
+    }
+    
+    for (int count = 0; count < number_of_connection_pairs; count++) {
+        if (connection1 == connection_pairs[count].connection_point_1 || connection1 == connection_pairs[count].connection_point_2
+            || connection2 == connection_pairs[count].connection_point_1 || connection2 == connection_pairs[count].connection_point_2) {
+                cerr << "Invalid reflector mapping" << endl;
+                exit(INVALID_REFLECTOR_MAPPING);
+        }
+
+    }
+    connection_pairs.push_back(ConnectionPair(connection1, connection2));
 }
 
 Rotor::Rotor(string& rotor_filename, int rotor_pos){
