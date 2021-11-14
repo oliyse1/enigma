@@ -19,19 +19,27 @@ int main(int argc, char** argv) {
 
     // string input;
     Enigma enigma(argc, argv);
-    char input;
+    string input;
+    string input_without_blanks = "";
     string output = "";
     
-    // getline(cin, input);
-    while (cin >> input) {
-        // cin >> ws >> input;
-        cout << static_cast<int>(input - 'A');
-
-        output = static_cast<char>(enigma.map(static_cast<int>(input - 'A')) + static_cast<int>('A'));
-        cout << output;
-
+    getline(cin, input);
+  
+    for (unsigned int i; i < input.length(); i++) {
+        if (input[i] != ' ') {
+            input_without_blanks.push_back(input[i]);
+        }
     }
-    
+
+    // cout << input_without_blanks;
+
+    for (unsigned int i; i < input_without_blanks.length(); i++) {
+        output.push_back(static_cast<char>(enigma.map(static_cast<int>(input[i] - 'A')) + static_cast<int>('A')));
+    }
+
+    // output = static_cast<char>(enigma.map(static_cast<int>(input - 'A')) + static_cast<int>('A'));
+    // cout << output;
+
 
     // cout << (static_cast<int>(input[0]) -'A') << endl;
     // cout << (static_cast<char>(1 + static_cast<int>('A') ));
