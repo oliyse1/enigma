@@ -235,7 +235,9 @@ Rotor::Rotor(string& rotor_filename, int rotor_pos){
 
 
 void Rotor::increaseOffsetByOne() {
-    rotor_pos++ ;
+    
+    rotor_pos = (rotor_pos + 1) % 26;
+    
     for (int count = 0; count < number_of_notches; count++) {
 
         if ((this -> left != nullptr) && (rotor_pos == notches[count])) {
@@ -258,6 +260,7 @@ int Rotor::getConnectingAlphabetFromRight(int input_alphabet) {
 }
 
 int Rotor::getConnectingAlphabetFromLeft(int input_alphabet) {
+    input_alphabet = (input_alphabet - rotor_pos) % 26;
 
     for (int count = 0; count < number_of_connection_pairs; count++) {
         if (input_alphabet == connection_pairs[count].connection_point_2) {
