@@ -273,7 +273,7 @@ void Rotor::addConnectionPair(int connection1, int connection2){
     
     for (int count = 0; count < number_of_connection_pairs; count++) {
         if (connection2 == connection_pairs[count].connection_point_2) {
-                cerr << "Invalid mapping of input "<< connection1 << " to output " << connection2 <<" (output " << connection2 << " is already mapped to from input " << connection_pairs[count].connection_point_1 << ") in rotor file rotor.rot" << endl;
+                cerr << "Invalid mapping of input "<< connection1 << " to output " << connection2 <<" (output " << connection2 << " is already mapped to from input " << connection_pairs[count].connection_point_1 << ") in rotor file: rotor.rot" << endl;
                 exit(INVALID_ROTOR_MAPPING );
         }
 
@@ -354,6 +354,14 @@ Rotor* Enigma::createRotors() {
             current_rotor_node = new Rotor(rotor_filenames[count], rotor_pos);
             left -> right = current_rotor_node;
             current_rotor_node -> left = left;
+        }
+        in_stream >> rotor_pos; 
+    }
+
+    while (!in_stream.eof()) {
+        if (in_stream.fail()) {
+            cerr << "Non-numeric character in rotor positions file rotor.pos" << endl;
+            exit(NON_NUMERIC_CHARACTER);
         }
         in_stream >> rotor_pos; 
     }
