@@ -133,11 +133,13 @@ Reflector::Reflector(string reflector_filename){
             addConnectionPair(connection_a, connection_b);
             number_of_connection_pairs++;
         }
-        in_stream >> input_int;
         counter++;
+        in_stream >> input_int;
+        
     }
 
-    if (counter % 2 != 0) {
+
+    if ((counter % 2) != 0) {
         cerr << "Incorrect (odd) number of parameters in reflector file reflector.rf" << endl;
         exit(INCORRECT_NUMBER_OF_REFLECTOR_PARAMETERS);
     }
@@ -260,7 +262,14 @@ int Rotor::getConnectingAlphabetFromRight(int input_alphabet) {
 }
 
 int Rotor::getConnectingAlphabetFromLeft(int input_alphabet) {
-    input_alphabet = (input_alphabet - rotor_pos) % 26;
+
+    if((input_alphabet - rotor_pos) < 0) {
+        input_alphabet = 26 + (input_alphabet - rotor_pos) ;
+    }
+    else {
+        input_alphabet = (input_alphabet - rotor_pos) ;
+    }
+    
 
     for (int count = 0; count < number_of_connection_pairs; count++) {
         if (input_alphabet == connection_pairs[count].connection_point_2) {
