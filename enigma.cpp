@@ -250,7 +250,19 @@ void Rotor::increaseOffsetByOne() {
 
 int Rotor::getConnectingAlphabetFromRight(int input_alphabet) {
 
-    input_alphabet = (input_alphabet + rotor_pos) % 26;
+    if (this->right == nullptr) {
+        input_alphabet = (input_alphabet + rotor_pos) % 26;
+    } 
+    else {
+
+        if((input_alphabet - this->right->rotor_pos + this->rotor_pos) < 0) {
+            input_alphabet = 26 + (input_alphabet - this->right->rotor_pos + this->rotor_pos);
+        }
+        else {
+            input_alphabet = (input_alphabet - this->right->rotor_pos + this->rotor_pos) % 26;
+        } 
+    }
+
 
     for (int count = 0; count < number_of_connection_pairs; count++) {
         if (input_alphabet == connection_pairs[count].connection_point_1) {
@@ -263,12 +275,25 @@ int Rotor::getConnectingAlphabetFromRight(int input_alphabet) {
 
 int Rotor::getConnectingAlphabetFromLeft(int input_alphabet) {
 
-    if((input_alphabet - rotor_pos) < 0) {
-        input_alphabet = 26 + (input_alphabet - rotor_pos) ;
-    }
+    if (this->left == nullptr) {
+        if((input_alphabet - rotor_pos) < 0) {
+            input_alphabet = 26 + (input_alphabet - rotor_pos) ;
+        }
+        else {
+            input_alphabet = (input_alphabet - rotor_pos) ;
+        }
+    } 
     else {
-        input_alphabet = (input_alphabet - rotor_pos) ;
+
+        if((input_alphabet + this->left->rotor_pos - this->rotor_pos) < 0) {
+            input_alphabet = 26 + (input_alphabet + this->left->rotor_pos - this->rotor_pos);
+        }
+        else {
+            input_alphabet = (input_alphabet + this->left->rotor_pos - this->rotor_pos) % 26;
+        } 
     }
+
+
     
 
     for (int count = 0; count < number_of_connection_pairs; count++) {
@@ -305,7 +330,7 @@ Enigma::Enigma(int argc, char** argv) {
             reflector_filename = temp_string;
         }
         else if (temp_string.find(".rot") != string::npos) {
-            rotor_filenames[number_of_rotors] = temp_string;
+            rotor_filenames.push_back(temp_string);
             number_of_rotors++;
         }
         else if (temp_string.find(".pos") != string::npos) {

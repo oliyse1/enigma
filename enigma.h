@@ -43,7 +43,7 @@ public:
     Rotor* right = nullptr;
     Rotor(string& rotor_filename, int rotor_pos);
     std::vector<int> notches;
-    int number_of_notches;
+    int number_of_notches = 0;
     int rotor_pos = 0;
     std::vector<ConnectionPair> connection_pairs;
     int number_of_connection_pairs = 0;
@@ -65,7 +65,7 @@ public:
 class Enigma {
     string plugboard_filename;
     string reflector_filename;
-    string rotor_filenames[10];
+    std::vector<string> rotor_filenames;
     string rotor_pos_filename;
     string temp_string;
     int number_of_rotors = 0;
