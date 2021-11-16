@@ -249,60 +249,38 @@ void Rotor::increaseOffsetByOne() {
 }
 
 int Rotor::getConnectingAlphabetFromRight(int input_alphabet) {
+    int output_alphabet;
 
-    if (this->right == nullptr) {
-        input_alphabet = (input_alphabet + rotor_pos) % 26;
-    } 
-    else {
-
-        if((input_alphabet - this->right->rotor_pos + this->rotor_pos) < 0) {
-            input_alphabet = 26 + (input_alphabet - this->right->rotor_pos + this->rotor_pos);
-        }
-        else {
-            input_alphabet = (input_alphabet - this->right->rotor_pos + this->rotor_pos) % 26;
-        } 
-    }
-
+    input_alphabet = (input_alphabet + rotor_pos) % 26;
+    
 
     for (int count = 0; count < number_of_connection_pairs; count++) {
         if (input_alphabet == connection_pairs[count].connection_point_1) {
-            return connection_pairs[count].connection_point_2;
+            output_alphabet = connection_pairs[count].connection_point_2;
         }
     }
 
-    return input_alphabet;
+    output_alphabet = (26 + output_alphabet - rotor_pos) % 26;
+
+    return output_alphabet;
 }
 
 int Rotor::getConnectingAlphabetFromLeft(int input_alphabet) {
 
-    if (this->left == nullptr) {
-        if((input_alphabet - rotor_pos) < 0) {
-            input_alphabet = 26 + (input_alphabet - rotor_pos) ;
-        }
-        else {
-            input_alphabet = (input_alphabet - rotor_pos) ;
-        }
-    } 
-    else {
+    int output_alphabet;
 
-        if((input_alphabet + this->left->rotor_pos - this->rotor_pos) < 0) {
-            input_alphabet = 26 + (input_alphabet + this->left->rotor_pos - this->rotor_pos);
-        }
-        else {
-            input_alphabet = (input_alphabet + this->left->rotor_pos - this->rotor_pos) % 26;
-        } 
-    }
-
-
+    input_alphabet = (input_alphabet + rotor_pos) % 26;
     
 
     for (int count = 0; count < number_of_connection_pairs; count++) {
         if (input_alphabet == connection_pairs[count].connection_point_2) {
-            return connection_pairs[count].connection_point_1;
+            output_alphabet = connection_pairs[count].connection_point_1;
         }
     }
 
-    return input_alphabet;
+    output_alphabet = (26 + output_alphabet - rotor_pos) % 26;
+
+    return output_alphabet;    
 }
     
 
