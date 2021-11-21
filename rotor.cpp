@@ -17,7 +17,7 @@ Rotor::Rotor(string const& rotor_filename, int rotor_pos){
     int input_int;
     int counter = 0;
 
-    //open plugboard configuration file
+    //open rotor configuration file
     fstream in_stream;
     in_stream.open(rotor_filename);
 

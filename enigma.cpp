@@ -92,7 +92,7 @@ Rotor* Enigma::createRotors() {
                 throw(INVALID_INDEX);
         }
 
-        //create rotors and set pointers within rotors to link correctly
+        //create rotors and set pointers within rotors to link to each other correctly
         if (current_rotor == nullptr){
             current_rotor = new Rotor(rotor_filenames[count], rotor_pos);;
         }

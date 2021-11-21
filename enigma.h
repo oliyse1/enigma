@@ -9,7 +9,7 @@
 
 using namespace std;
 
-
+//Enigma class creates an enigma machine object
 class Enigma {
 private:
     string plugboard_filename;

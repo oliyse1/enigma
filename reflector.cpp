@@ -68,7 +68,7 @@ Reflector::Reflector(string const& reflector_filename){
         throw(INCORRECT_NUMBER_OF_REFLECTOR_PARAMETERS);
     }
 
-    //check if file contains 26 numbers or 13 pairs of numbers
+    //check if file contains exactly 26 numbers or 13 pairs of numbers
     if (number_of_connection_pairs != 13) {
             cerr << "Insufficient number of mappings in reflector file: reflector.rf" << endl;
             throw(INCORRECT_NUMBER_OF_REFLECTOR_PARAMETERS);
