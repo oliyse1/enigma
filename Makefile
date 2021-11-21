@@ -18,4 +18,4 @@ plugboard.o: plugboard.cpp plugboard.h connectionpair.h
 
 .PHONY: clean
 clean:
-	rm -f main.o sudoku.o sudoku
+	rm -f main.o enigma.o rotor.o reflector.o plugboard.o enigma
